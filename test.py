@@ -9,3 +9,8 @@ import dnb.currency.conversion
 
 conversion = dnb.currency.conversion.convert("NOK", "EUR", 50)
 print(conversion)
+
+print('\n\n---------------------------------\n\n')
+
+conversion_rates = dnb.currency.conversion.conversion_rates("NOK")
+print(conversion_rates)

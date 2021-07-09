@@ -14,7 +14,8 @@ def conversion_rates(currency, apikey = os.environ.get("APIKEY"), live = os.envi
     resp = requests.get(
         url, headers={"x-api-key": apikey}
     )
-    return json.loads(resp.content)
+    json_data = json.loads(resp.content)
+    return list(map( lambda con: Conversion(con), json_data))
 
 def convert(fro, to, amt, apikey = os.environ.get("APIKEY"), live=os.environ.get("LIVE", False)):
     url = api if live else test_api
@@ -64,5 +65,15 @@ class Conversion(stuf.stuf):
         return self.mid_rate>=other
 
     # Other
+    def __str__(self):
+        abs = lambda x: x if x > 0 else -x
+
+        base = self.base_currency
+        quote = self.quote_currency
+        # Pad with 0 and keep 2 decimals
+        amt = (str(self.amount) + "00")[:len(str(float(self.amount)).split('.')[0])+3]
+        return f"<Conversion [{round(float(amt), 2)} {base}->{quote}]>"
+    def __repr__(self):
+        return self.__str__()
     def __round__(self, decimals):
         return round(self.mid_rate, decimals)
