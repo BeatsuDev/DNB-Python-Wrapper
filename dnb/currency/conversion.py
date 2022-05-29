@@ -1,7 +1,6 @@
 import os, json, re
 import requests
 import stuf
-import arrow
 
 from ..endpoints import api, test_api, currency_endpoints
 
@@ -17,12 +16,12 @@ def conversion_rates(currency, apikey = os.environ.get("APIKEY"), live = os.envi
     json_data = json.loads(resp.content)
     return list(map( lambda con: Conversion(con), json_data))
 
-def convert(fro, to, amt, apikey = os.environ.get("APIKEY"), live=os.environ.get("LIVE", False)):
+def convert(from_currency, to_currency, amount, apikey = os.environ.get("APIKEY"), live = os.environ.get("LIVE", False)):
     url = api if live else test_api
-    url += currency_endpoints.conversion.format(base_currency=fro, quote_currency=to)
+    url += currency_endpoints.conversion.format(base_currency=from_currency, quote_currency=to_currency)
 
     resp = requests.get( 
-        url, params={"amount": amt}, headers={"x-api-key": apikey}
+        url, params = {"amount": amount}, headers = {"x-api-key": apikey}
     )
     return Conversion(json.loads(resp.content))
 
@@ -66,8 +65,6 @@ class Conversion(stuf.stuf):
 
     # Other
     def __str__(self):
-        abs = lambda x: x if x > 0 else -x
-
         base = self.base_currency
         quote = self.quote_currency
         # Pad with 0 and keep 2 decimals
