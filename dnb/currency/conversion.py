@@ -2,7 +2,7 @@ import os, json, re
 import requests
 import stuf
 
-from ..endpoints import api, test_api, currency_endpoints
+from dnb import api, test_api, currency_endpoints
 
 
 
